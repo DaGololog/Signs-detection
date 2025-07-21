@@ -1,24 +1,16 @@
-# -*- coding: utf-8 -*-
+#I am trying to do a sign-detection program on raw OpenCV2. It isn't working yet.
+#The idea is to check collisions between red and white frames so it could recognise this as a "stop" sign.
 import cv2 as cv
-## TODO: Допишите импорт библиотек, которые собираетесь использовать
 
 def predict_box(image):
 
     blur = cv.blur(image, (3, 3))
 
     R = cv.inRange(blur, (0, 0, 150), (180, 150, 255))
-    BL = cv.inRange(blur, (90, 0, 0), (255, 110, 110))
-    BD = cv.inRange(blur, (210, 0, 0), (255, 170, 170))
     B = cv.inRange(blur, (170, 0, 0), (255, 130, 130))
-
-    #R_dil = cv.dilate(binarR, (5, 5), iterations=1)
-    #BL_dil = cv.dilate(binarBL, (5, 5), iterations=1)
-    #BD_dil = cv.dilate(binarBD, (5, 5), iterations=1)
 
     contoursR, hierarchy = cv.findContours(R, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     contoursB, hierarchy = cv.findContours(B, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    contoursBL, hierarchy = cv.findContours(BL, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    contoursBD, hierarchy = cv.findContours(BD, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
     min_area = 200
     filtered_contours = []
@@ -28,16 +20,6 @@ def predict_box(image):
             filtered_contours.append(contour)
 
     for contour in contoursB:
-        area = cv.contourArea(contour)
-        if area > min_area:
-            filtered_contours.append(contour)
-            
-    for contour in contoursBL:
-        area = cv.contourArea(contour)
-        if area > min_area:
-            filtered_contours.append(contour)
-
-    for contour in contoursBD:
         area = cv.contourArea(contour)
         if area > min_area:
             filtered_contours.append(contour)
